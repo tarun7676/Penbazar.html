@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="light" />
+<title>PenBazaar - Buy & Sell Pre-Owned Pens in India | Parker, Lamy, Pilot</title>
+<meta name="description" content="PenBazaar is India's marketplace for pre-owned pens. Buy and sell second-hand Parker, Lamy, Pilot, Waterman and Montblanc fountain pens, rollerballs and ballpoints with ink level shown, COD and free delivery." />
+<meta name="keywords" content="PenBazaar, penbazar, second hand pens, pre-owned fountain pens, used Parker pen, used Lamy pen, buy pens India, sell old pens, Montblanc pre-owned" />
+<meta name="robots" content="index, follow" />
+<meta name="theme-color" content="#9f2089" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="PenBazaar" />
+<meta property="og:title" content="PenBazaar - Buy & Sell Pre-Owned Pens in India" />
+<meta property="og:description" content="Pre-owned Parker, Lamy, Pilot, Waterman and Montblanc pens with ink level shown. COD available." />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="PenBazaar - Buy & Sell Pre-Owned Pens in India" />
+<meta name="twitter:description" content="Pre-owned fountain pens, rollerballs and ballpoints with ink level shown. COD available." />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebSite","name":"PenBazaar","alternateName":"PenBazar","description":"Marketplace to buy and sell pre-owned pens in India."}
+</script>
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<style>
+  :root { box-sizing: border-box; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body { font-family: system-ui, -apple-system, sans-serif; background-color: #f8fafc; color: #1e293b; }
+  .meesho-pink { background-color: #9f2089; }
+  .meesho-text { color: #9f2089; }
+</style>
+</head>
+<body class="text-slate-800">
+
+<header class="meesho-pink text-white sticky top-0 z-30 shadow-md" style="top: env(safe-area-inset-top, 0px)">
+  <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between gap-2">
+    <div class="flex items-center gap-2">
+      <span class="bg-white meesho-text font-black text-xl px-2 py-0.5 rounded shadow">PB</span>
+      <div>
+        <h1 class="text-lg font-bold leading-none">PenBazaar</h1>
+        <p class="text-[10px] text-pink-200">Meesho for 2nd Hand Pens</p>
+      </div>
+    </div>
+    <div class="flex bg-pink-950/40 p-1 rounded-xl text-xs font-semibold">
+      <button id="btnBuyer" onclick="switchTab('buyer')" class="px-3 py-1.5 rounded-lg bg-white text-pink-700 shadow">🛍️ Buyer</button>
+      <button id="btnSeller" onclick="switchTab('seller')" class="px-3 py-1.5 rounded-lg text-pink-100">✍️ Seller</button>
+    </div>
+  </div>
+  <div id="locationBar" class="bg-pink-900/90 text-xs px-4 py-1.5 border-t border-pink-700 flex items-center justify-between max-w-5xl mx-auto">
+    <div class="flex items-center gap-2">
+      <span class="text-pink-200">📍 Deliver to:</span>
+      <input id="pincodeInput" type="text" maxlength="6" value="560001" oninput="updateLocation()" class="w-16 px-1.5 py-0.5 text-center font-bold text-pink-950 bg-white rounded text-xs" />
+      <span id="cityName" class="font-semibold text-white bg-pink-800 px-2 py-0.5 rounded">Bengaluru</span>
+    </div>
+    <span class="text-pink-200 hidden sm:inline">⚡ Free Delivery • COD Available</span>
+  </div>
+</header>
+
+<main class="max-w-5xl mx-auto p-4">
+
+  <div id="buyerView" class="space-y-4">
+    <div class="bg-white p-3 rounded-xl border border-slate-200 flex flex-wrap gap-2 items-center justify-between text-xs">
+      <input id="searchBar" type="text" oninput="renderPens()" placeholder="Search Parker, Lamy, ink..." class="flex-1 min-w-[180px] p-2 border rounded-lg" />
+      <select id="brandFilter" onchange="renderPens()" class="p-2 border rounded-lg bg-slate-50 font-medium">
+        <option value="All">All Brands</option>
+        <option value="Parker">Parker</option>
+        <option value="Lamy">Lamy</option>
+        <option value="Pilot">Pilot</option>
+        <option value="Waterman">Waterman</option>
+        <option value="Montblanc">Montblanc</option>
+        <option value="Reynolds">Reynolds</option>
+        <option value="Cross">Cross</option>
+      </select>
+      <select id="inkFilter" onchange="renderPens()" class="p-2 border rounded-lg bg-slate-50 font-medium">
+        <option value="0">Any Ink Level</option>
+        <option value="50">Min 50% Ink</option>
+        <option value="80">Min 80% Ink</option>
+      </select>
+    </div>
+    <div id="pensGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
+  </div>
+
+  <div id="sellerView" class="hidden space-y-4">
+    <div class="bg-gradient-to-r from-pink-700 to-purple-800 text-white p-4 rounded-2xl shadow">
+      <h2 class="text-lg font-black">List Your Pre-Owned Pen</h2>
+      <p class="text-xs text-pink-200 mt-1">Set your selling price, ink percentage, and earn with 0% commission.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <form onsubmit="addPen(event)" class="md:col-span-2 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3 text-xs">
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="font-bold text-slate-600 block mb-1">Company / Brand *</label>
+            <select id="newBrand" class="w-full p-2 border rounded-lg bg-slate-50">
+              <option>Parker</option><option>Lamy</option><option>Pilot</option><option>Waterman</option><option>Montblanc</option><option>Reynolds</option><option>Cross</option>
+            </select>
+          </div>
+          <div>
+            <label class="font-bold text-slate-600 block mb-1">Mechanism *</label>
+            <select id="newType" class="w-full p-2 border rounded-lg bg-slate-50">
+              <option>Fountain Pen</option><option>Rollerball</option><option>Ballpoint</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="font-bold text-slate-600 block mb-1">Pen Model Name *</label>
+          <input id="newModel" required placeholder="e.g. Sonnet GT or Safari Charcoal" class="w-full p-2 border rounded-lg" />
+        </div>
+        <div class="bg-pink-50 p-3 rounded-xl border border-pink-100">
+          <div class="flex justify-between items-center mb-1">
+            <span class="font-bold text-pink-900">Remaining Ink Percentage:</span>
+            <span id="inkValLabel" class="font-black text-pink-700 bg-pink-200 px-2 py-0.5 rounded">75%</span>
+          </div>
+          <input id="newInk" type="range" min="5" max="100" value="75" oninput="document.getElementById('inkValLabel').innerText = this.value + '%'" class="w-full accent-pink-600 cursor-pointer" />
+          <input id="newInkColor" placeholder="Loaded Ink Color (e.g. Royal Blue)" class="w-full p-2 border rounded-lg bg-white mt-2" />
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="font-bold text-slate-600 block mb-1">Your Price (₹) *</label>
+            <input id="newPrice" type="number" required placeholder="₹ 1299" class="w-full p-2 border rounded-lg font-bold" />
+          </div>
+          <div>
+            <label class="font-bold text-slate-600 block mb-1">Original MRP (₹)</label>
+            <input id="newMRP" type="number" placeholder="₹ 2800" class="w-full p-2 border rounded-lg" />
+          </div>
+        </div>
+        <button type="submit" class="w-full py-2.5 meesho-pink text-white font-bold rounded-xl shadow mt-2">Publish Pen Listing 🚀</button>
+      </form>
+
+      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3 text-xs">
+        <h3 class="font-bold text-slate-800">💰 Meesho Reseller Margin</h3>
+        <p class="text-slate-500 text-[11px]">Add your margin and share pen listings with contacts on WhatsApp.</p>
+        <div class="bg-slate-50 p-2.5 rounded-lg border">
+          <label class="text-slate-600 font-semibold block mb-1">Margin (₹)</label>
+          <input id="marginInput" type="number" value="200" oninput="updateMargin()" class="w-full p-1.5 border rounded bg-white font-bold" />
+        </div>
+        <div class="text-[11px] space-y-1 border-t pt-2 text-slate-600">
+          <p>Sample Pen: ₹1,200</p>
+          <p class="text-pink-600 font-bold">+ Your Profit: ₹<span id="marginDisplay">200</span></p>
+          <p class="font-black text-slate-900 border-t pt-1">Buyer Pays: ₹<span id="totalDisplay">1400</span></p>
+        </div>
+        <button onclick="toast('Reseller link created! You will receive your margin directly via UPI.')" class="w-full py-2 bg-emerald-600 text-white font-bold rounded-lg">📲 Share on WhatsApp</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div id="orderModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+  <div class="bg-white max-w-sm w-full p-5 rounded-2xl space-y-3 text-xs">
+    <div class="flex justify-between items-center border-b pb-2">
+      <h3 class="font-black text-sm">Place Meesho Order</h3>
+      <button onclick="closeModal()" class="text-slate-400 font-bold text-sm">✕</button>
+    </div>
+    <div id="modalPenDetails" class="bg-pink-50 p-2.5 rounded-xl text-pink-950 font-medium"></div>
+    <div>
+      <label class="font-bold text-slate-600 block mb-1">Delivery Address</label>
+      <input id="orderAddress" value="Flat 402, Royal Residency" class="w-full p-2 border rounded-lg" />
+    </div>
+    <div class="p-2.5 bg-slate-50 rounded-xl border">
+      <label class="flex items-center gap-2 cursor-pointer">
+        <input type="radio" checked class="accent-pink-600" />
+        <span class="font-bold">Cash on Delivery (COD)</span>
+      </label>
+    </div>
+    <button onclick="confirmOrder()" class="w-full py-2.5 meesho-pink text-white font-bold rounded-xl shadow">Confirm & Ship Order 🚚</button>
+  </div>
+</div>
+
+<div id="toast" class="hidden fixed left-1/2 -translate-x-1/2 bottom-6 z-[60] max-w-[90%] bg-slate-900 text-white text-xs font-semibold px-4 py-3 rounded-xl shadow-lg text-center"></div>
+
+<script>
+  function penImg(body, cap) {
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200"><rect width="400" height="200" fill="#fdf2f8"/><g transform="rotate(-25 200 100)"><rect x="60" y="88" width="250" height="24" rx="12" fill="${body}"/><rect x="250" y="88" width="30" height="24" fill="#d4af37"/><path d="M310 88 L355 100 L310 112 Z" fill="#d4af37"/><rect x="95" y="94" width="60" height="5" rx="2" fill="#fff" opacity=".35"/></g></svg>`;
+    return "data:image/svg+xml;utf8," + encodeURIComponent(svg);
+  }
+
+  let pens = [
+    { id: "1", brand: "Parker", model: "Sonnet Black GT", type: "Fountain Pen", ink: 85, inkColor: "Quink Blue", price: 3499, mrp: 7800, img: penImg("#111827") },
+    { id: "2", brand: "Lamy", model: "Safari Charcoal", type: "Fountain Pen", ink: 60, inkColor: "T10 Petrol", price: 1350, mrp: 2800, img: penImg("#475569") },
+    { id: "3", brand: "Pilot", model: "Custom 74 Demonstrator", type: "Fountain Pen", ink: 95, inkColor: "Iroshizuku Blue", price: 8990, mrp: 15500, img: penImg("#93c5fd") },
+    { id: "4", brand: "Waterman", model: "Hémisphère Matte", type: "Rollerball", ink: 40, inkColor: "Carbon Black", price: 2490, mrp: 5200, img: penImg("#1f2937") },
+    { id: "5", brand: "Montblanc", model: "Meisterstück 164", type: "Ballpoint", ink: 70, inkColor: "Mystery Black", price: 18900, mrp: 42000, img: penImg("#000000") },
+    { id: "6", brand: "Reynolds", model: "045 Vintage Blue (Pack of 3)", type: "Ballpoint", ink: 100, inkColor: "Classic Blue", price: 160, mrp: 299, img: penImg("#2563eb") }
+  ];
+  let selectedPenForOrder = null;
+  let toastTimer;
+
+  function toast(msg) {
+    const t = document.getElementById('toast');
+    t.innerText = msg;
+    t.classList.remove('hidden');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.add('hidden'), 3500);
+  }
+
+  function switchTab(tab) {
+    const isBuyer = tab === 'buyer';
+    document.getElementById('buyerView').classList.toggle('hidden', !isBuyer);
+    document.getElementById('sellerView').classList.toggle('hidden', isBuyer);
+    document.getElementById('locationBar').classList.toggle('hidden', !isBuyer);
+    document.getElementById('btnBuyer').className = isBuyer ? "px-3 py-1.5 rounded-lg bg-white text-pink-700 shadow" : "px-3 py-1.5 rounded-lg text-pink-100";
+    document.getElementById('btnSeller').className = !isBuyer ? "px-3 py-1.5 rounded-lg bg-amber-400 text-pink-950 font-bold shadow" : "px-3 py-1.5 rounded-lg text-pink-100";
+  }
+
+  function updateLocation() {
+    const pin = document.getElementById('pincodeInput').value;
+    const c = document.getElementById('cityName');
+    if (pin.startsWith("56")) c.innerText = "Bengaluru, KA";
+    else if (pin.startsWith("40")) c.innerText = "Mumbai, MH";
+    else if (pin.startsWith("11")) c.innerText = "Delhi, DL";
+    else if (pin.startsWith("60")) c.innerText = "Chennai, TN";
+    else if (pin.startsWith("50")) c.innerText = "Hyderabad, TS";
+    else c.innerText = "India (Express Hub)";
+  }
+
+  function esc(s) { return String(s).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
+
+  function renderPens() {
+    const q = document.getElementById('searchBar').value.toLowerCase();
+    const b = document.getElementById('brandFilter').value;
+    const ink = Number(document.getElementById('inkFilter').value);
+    const grid = document.getElementById('pensGrid');
+    const filtered = pens.filter(p =>
+      (p.model.toLowerCase().includes(q) || p.brand.toLowerCase().includes(q)) &&
+      (b === "All" || p.brand === b) && p.ink >= ink);
+
+    if (!filtered.length) { grid.innerHTML = '<p class="col-span-full text-center text-slate-500 text-sm py-10">No pens match your search.</p>'; return; }
+
+    grid.innerHTML = filtered.map(p => {
+      const discount = Math.max(0, Math.round(((p.mrp - p.price) / p.mrp) * 100));
+      const bar = p.ink > 60 ? "bg-emerald-500" : p.ink > 30 ? "bg-amber-500" : "bg-rose-500";
+      return `
+        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm flex flex-col justify-between">
+          <div>
+            <img src="${p.img}" alt="${esc(p.model)}" class="w-full h-40 object-cover" />
+            <div class="p-3">
+              <span class="text-[10px] font-bold meesho-text uppercase">${esc(p.brand)} • ${esc(p.type)}</span>
+              <h4 class="font-bold text-slate-800 text-sm mt-0.5">${esc(p.model)}</h4>
+              <div class="bg-slate-50 p-2 rounded-xl border mt-2">
+                <div class="flex justify-between text-[11px] font-semibold mb-1">
+                  <span class="text-slate-600">Ink Level:</span>
+                  <span class="font-bold text-slate-900">${p.ink}% Loaded</span>
+                </div>
+                <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden"><div class="${bar} h-full" style="width:${p.ink}%"></div></div>
+                <p class="text-[10px] text-slate-400 mt-1">${esc(p.inkColor)}</p>
+              </div>
+            </div>
+          </div>
+          <div class="p-3 pt-0">
+            <div class="flex items-baseline gap-2 mb-2">
+              <span class="text-base font-black text-slate-900">₹${p.price}</span>
+              <span class="text-xs text-slate-400 line-through">₹${p.mrp}</span>
+              <span class="text-xs font-bold text-emerald-600">${discount}% OFF</span>
+            </div>
+            <button onclick="openOrderModal('${p.id}')" class="w-full py-2 meesho-pink text-white font-bold text-xs rounded-xl shadow">Buy Now (COD)</button>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  function addPen(e) {
+    e.preventDefault();
+    const price = Number(document.getElementById('newPrice').value);
+    pens.unshift({
+      id: Date.now().toString(),
+      brand: document.getElementById('newBrand').value,
+      type: document.getElementById('newType').value,
+      model: document.getElementById('newModel').value,
+      ink: Number(document.getElementById('newInk').value),
+      inkColor: document.getElementById('newInkColor').value || "Blue Ink",
+      price: price,
+      mrp: Number(document.getElementById('newMRP').value) || Math.round(price * 1.5),
+      img: penImg("#9f2089")
+    });
+    e.target.reset();
+    document.getElementById('inkValLabel').innerText = '75%';
+    switchTab('buyer');
+    renderPens();
+    toast("Your pen has been listed successfully!");
+  }
+
+  function updateMargin() {
+    const m = Number(document.getElementById('marginInput').value) || 0;
+    document.getElementById('marginDisplay').innerText = m;
+    document.getElementById('totalDisplay').innerText = 1200 + m;
+  }
+
+  function openOrderModal(id) {
+    selectedPenForOrder = pens.find(p => p.id === id);
+    document.getElementById('modalPenDetails').innerHTML = `
+      <p class="font-bold">${esc(selectedPenForOrder.model)}</p>
+      <p class="text-[11px] text-pink-700 font-semibold">${esc(selectedPenForOrder.brand)} • ${selectedPenForOrder.ink}% Ink • ₹${selectedPenForOrder.price}</p>`;
+    document.getElementById('orderModal').classList.remove('hidden');
+  }
+
+  function closeModal() { document.getElementById('orderModal').classList.add('hidden'); }
+
+  function confirmOrder() {
+    const pin = document.getElementById('pincodeInput').value;
+    const city = document.getElementById('cityName').innerText;
+    closeModal();
+    toast(`Order Confirmed! ${selectedPenForOrder.model} will be delivered to ${city} (PIN: ${pin}).`);
+  }
+
+  renderPens();
+</script>
+</body>
+</html>
